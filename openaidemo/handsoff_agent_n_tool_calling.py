@@ -47,7 +47,12 @@ multiplication_agent = Agent(
 
 orchestrator_handsoff_agent = Agent(
     name="AgentOrchestrator",
-    instructions="You determine which agent to call based on addition or subtraction user wants to perform",
+    instructions=(
+        "You determine which agent to call based on addition or subtraction user wants to perform"
+        "If user want to perform addition, handoff to addition_agent"
+        "If user want to perform subtraction, handoff to subtraction_agent"
+        "If user want to perform multiplication, handoff to multiplication_agent"
+    ),
     handoffs=[addition_agent, subtraction_agent, multiplication_agent],
     input_guardrails=[
         InputGuardrail(
