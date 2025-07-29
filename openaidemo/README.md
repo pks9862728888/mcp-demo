@@ -49,3 +49,13 @@ agent = Agent(
 
 ## To create a tool
 Annotate method by @function_tool
+
+## If multiple tools are called then we can stop on any tool
+"""
+agent = Agent(
+    name="Stop At Stock Agent",
+    instructions="Get weather or sum numbers.",
+    tools=[get_weather, sum_numbers],
+    tool_use_behavior=StopAtTools(stop_at_tool_names=["get_weather"])
+)
+"""
