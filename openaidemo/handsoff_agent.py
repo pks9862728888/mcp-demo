@@ -1,3 +1,4 @@
+import asyncio
 from agents import Agent, Runner
 from dotenv import load_dotenv
 
@@ -26,15 +27,19 @@ orchestrator_handsoff_agent = Agent(
 )
 
 
-def simple_handsoff_agent():
-    result = Runner.run_sync(orchestrator_handsoff_agent, input="2 - 3")
+async def simple_handsoff_agent(prompt: str):
+    print(prompt)
+    result = await Runner.run(orchestrator_handsoff_agent, input=prompt)
     print(result)
     print(result.final_output)
+    print()
 
 
-def main():
-    simple_handsoff_agent()
+async def main():
+    await simple_handsoff_agent("2 - 3")
+    await simple_handsoff_agent("2 + 3")
+    await simple_handsoff_agent("2 plus 5")
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
