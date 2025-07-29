@@ -18,3 +18,34 @@ Agents, which are LLMs equipped with instructions and tools
 Handoffs, which allow agents to delegate to other agents for specific tasks
 Guardrails, which enable the inputs to agents to be validated, GuardrailFunctionOutput, InputGuardrailTripwireTriggered
 Sessions, which automatically maintains conversation history across agent runs
+
+
+## Cloning or copying agent is also supported.
+By using the clone() method on an agent, you can duplicate an Agent, and optionally change any properties you like.
+```
+pirate_agent = Agent(
+    name="Pirate",
+    instructions="Write like a pirate",
+    model="o3-mini",
+)
+
+robot_agent = pirate_agent.clone(
+    name="Robot",
+    instructions="Write like a robot",
+)
+```
+
+## Forcing tool use
+Supplying a list of tools doesn't always mean the LLM will use a tool. You can force tool use by setting ModelSettings.tool_choice
+
+```
+agent = Agent(
+    name="Weather Agent",
+    instructions="Retrieve weather details.",
+    tools=[get_weather],
+    model_settings=ModelSettings(tool_choice="get_weather") 
+)
+```
+
+## To create a tool
+Annotate method by @function_tool
