@@ -16,5 +16,5 @@ The Agents SDK has a very small set of primitives:
 
 Agents, which are LLMs equipped with instructions and tools
 Handoffs, which allow agents to delegate to other agents for specific tasks
-Guardrails, which enable the inputs to agents to be validated
+Guardrails, which enable the inputs to agents to be validated, GuardrailFunctionOutput, InputGuardrailTripwireTriggered
 Sessions, which automatically maintains conversation history across agent runs
