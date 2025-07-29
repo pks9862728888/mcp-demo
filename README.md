@@ -33,11 +33,14 @@ uv add openai
 # On Windows
 .venv\Scripts\activate
 
-# On macOS/Linux
-source .venv/bin/activate
-
+# If gitbash
+source .venv/Scripts/activate
 ```
 
+- To run a script
+```
+uv run main.py
+```
 
 ---
 #### MCP architecture
