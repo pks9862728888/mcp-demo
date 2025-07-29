@@ -1,8 +1,6 @@
 from agents import Agent, Runner
 from dotenv import load_dotenv
 
-from utils import openai_client
-
 load_dotenv()
 
 agent = Agent(

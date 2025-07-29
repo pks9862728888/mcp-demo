@@ -10,3 +10,11 @@ Building agents involves assembling components across several domains—such as 
 from dotenv import load_dotenv
 load_dotenv()
 ```
+
+## Theory
+The Agents SDK has a very small set of primitives:
+
+Agents, which are LLMs equipped with instructions and tools
+Handoffs, which allow agents to delegate to other agents for specific tasks
+Guardrails, which enable the inputs to agents to be validated
+Sessions, which automatically maintains conversation history across agent runs
