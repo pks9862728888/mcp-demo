@@ -39,7 +39,8 @@ subtraction_agent = Agent(
 
 multiplication_agent = Agent(
     name="MultiplicationCalculatorAgent",
-    instructions="You are a calculator who can only use the tools provided to perform operations",
+    instructions="You are a calculator who can only use the tools provided to perform operations \
+        and returns the result which you got from tool calling without modification",
     model=openai_model_gpt41,
     tools=[multiply_two_numbers],
 )
