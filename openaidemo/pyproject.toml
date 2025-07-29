@@ -1,7 +1,9 @@
 [project]
-name = "openai"
+name = "openaidemo"
 version = "0.1.0"
 description = "Demo project for trying out openai"
 readme = "README.md"
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+    "openai>=0.1.0",
+]
