@@ -3,6 +3,7 @@ from agents import Agent, GuardrailFunctionOutput, Runner
 from agents.agent_output import AgentOutputSchema
 from dotenv import load_dotenv
 from openai import BaseModel
+from pydantic import ConfigDict
 
 load_dotenv()
 
@@ -11,11 +12,13 @@ class ValidOperationOutput(BaseModel):
     is_valid_operation: bool
     reasoning: str
 
+    model_config = ConfigDict(extra="forbid", strict=True)
+
 
 guardrail_agent = Agent(
     name="OperatorGuardrailAgent",
     instructions="Check if user is trying to do addition or subtraction",
-    output_type=AgentOutputSchema(ValidOperationOutput, strict_json_schema=False),
+    output_type=AgentOutputSchema(ValidOperationOutput, strict_json_schema=True),
 )
 
 
