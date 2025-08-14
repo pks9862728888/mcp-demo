@@ -85,17 +85,23 @@ def format_results(results) -> str:
 
 
 async def perform_rag(user_query: str, vector_store_id: str):
+    print("---------------------------------------------------")
     results = openai.vector_stores.search(
-        vector_store_id=vector_store_id, query=user_query
+        vector_store_id=vector_store_id,
+        query=user_query,
+        max_num_results=5,
+        ranking_options={"score_threshold": 0.65},
     )
     formatted_results = format_results(results.data)
-    # print(formatted_results)
+    print(formatted_results)
     completion = openai.chat.completions.create(
         model=openai_model_gpt41,
         messages=[
             {
                 "role": "user",
-                "content": "Provide a concise answer to the query based on the provided sources.",
+                "content": "Provide a concise answer to the query based on the provided sources. \
+                    If answer can not be provided based on sources provided then communicate to user clearly.\
+                    Be humble if you can't answer. Don't say anything extra if you cant answer",
             },
             {
                 "role": "user",
@@ -118,13 +124,15 @@ async def main():
     if not await check_file_exists_in_vector_store(vs_file_id, vector_store_id):
         await upload_file_to_vector_store(file_path, vector_store_id)
     await perform_rag("What is policy for Dummy Company?", vector_store_id)
-    await perform_rag("What is capital of India?", vector_store_id)
+    await perform_rag("What is policy for Google?", vector_store_id)
+    await perform_rag("What is the capital of India?", vector_store_id)
 
 
 """
 		Files can be uploaded to openai and then the files can be added to vector store
 		Then based on the files uploaded in vector store questions can be answered
 		Uploaded files and vector store can be viewed at: https://platform.openai.com/storage/files/
+        Refernce: https://platform.openai.com/docs/guides/retrieval#vector-stores
 """
 if __name__ == "__main__":
     asyncio.run(main())
