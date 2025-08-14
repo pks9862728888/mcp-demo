@@ -121,5 +121,10 @@ async def main():
     await perform_rag("What is capital of India?", vector_store_id)
 
 
+"""
+		Files can be uploaded to openai and then the files can be added to vector store
+		Then based on the files uploaded in vector store questions can be answered
+		Uploaded files and vector store can be viewed at: https://platform.openai.com/storage/files/
+"""
 if __name__ == "__main__":
     asyncio.run(main())
