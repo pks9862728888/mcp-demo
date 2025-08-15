@@ -26,6 +26,7 @@ graph_builder.add_edge("chatbot", END)
 
 def build_and_display_graph():
     """Builds the state graph and displays it."""
+    logger.info("Building and displaying the state graph...")
     global graph
     graph = graph_builder.compile()
     try:
@@ -35,3 +36,24 @@ def build_and_display_graph():
         os.startfile(output_path)
     except Exception as e:
         logger.error(f"Error displaying graph: {e}")
+
+
+def stream_graph_updates(user_input: str) -> None:
+    for event in graph.stream({
+        "messages": [
+            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "user", "content": user_input}
+        ]
+    }):
+        for value in event.values():
+            print(f"Assistant: {value['messages'][-1].content}\n")
+
+
+def start_chatbot() -> None:
+    """Starts the chatbot interaction."""
+    logger.info("Starting chatbot interaction...")
+    user_input = input("User: ")
+    while user_input.lower() not in ["exit", "quit", "q"]:
+        stream_graph_updates(user_input)
+        user_input = input("User: ")
+    logger.info("Chatbot interaction ended.")
