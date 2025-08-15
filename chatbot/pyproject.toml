@@ -1,0 +1,20 @@
+[project]
+name = "chatbot"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "dotenv>=0.9.9",
+    "flake8>=7.3.0",
+    "langchain[openai]>=0.3.27",
+    "langgraph>=0.6.5",
+    "langsmith>=0.4.14",
+    "pydantic>=2.11.7",
+    "pydantic-settings>=2.10.1",
+]
+
+[[tool.uv.index]]
+name = "pypi"
+url = "https://pypi.org/simple"
+default = true
