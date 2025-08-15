@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 class Settings(BaseSettings):
     profile: str
     log_level: str
+    CHAT_MODEL: str = "openai:gpt-4.1"
 
 
 env_profile = os.environ.get("ACTIVE_PROFILE")

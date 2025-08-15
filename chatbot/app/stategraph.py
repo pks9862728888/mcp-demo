@@ -11,4 +11,7 @@ class State(TypedDict):
     messages: Annotated[list, add_messages]
 
 
+"""
+ A StateGraph object defines the structure of our chatbot as a "state machine".
+"""
 graph_builder = StateGraph(State)
