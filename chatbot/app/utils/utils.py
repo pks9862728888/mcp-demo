@@ -3,4 +3,4 @@ from app.config.logger import logger
 
 
 def print_env() -> None:
-  logger.info(f"Profile: {settings.profile}")
+    logger.info(f"Profile: {settings.profile}")
