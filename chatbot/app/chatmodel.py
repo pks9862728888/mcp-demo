@@ -11,6 +11,7 @@ llm = init_chat_model(settings.CHAT_MODEL, verbose=True)
 
 
 def chatbot(state: State):
+    print(state["messages"])
     return {"messages": [llm.invoke(state["messages"])]}
 
 
@@ -29,13 +30,13 @@ def build_and_display_graph():
     logger.info("Building and displaying the state graph...")
     global graph
     graph = graph_builder.compile()
-    try:
-        output_path = os.path.join("out", "my_graph.png")
-        with open(output_path, "wb") as f:
-            f.write(graph.get_graph().draw_mermaid_png())
-        os.startfile(output_path)
-    except Exception as e:
-        logger.error(f"Error displaying graph: {e}")
+    # try:
+    #     output_path = os.path.join("out", "my_graph.png")
+    #     with open(output_path, "wb") as f:
+    #         f.write(graph.get_graph().draw_mermaid_png())
+    #     os.startfile(output_path)
+    # except Exception as e:
+    #     logger.error(f"Error displaying graph: {e}")
 
 
 def stream_graph_updates(user_input: str) -> None:
