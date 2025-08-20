@@ -1,5 +1,5 @@
 from langchain_core.prompts import PromptTemplate, \
-ChatPromptTemplate, MessagesPlaceholder, FewShotPromptTemplate
+ChatPromptTemplate, MessagesPlaceholder, FewShotPromptTemplate, FewShotChatMessagePromptTemplate
 from langchain_core.example_selectors import SemanticSimilarityExampleSelector
 from langchain_openai import OpenAIEmbeddings
 from langchain_chroma import Chroma
@@ -72,6 +72,27 @@ def few_shot_prompt_template():
     formatted_prompt = prompt.invoke({"input": question})
     print(formatted_prompt.to_string())
     chat_with_model(formatted_prompt)
+
+
+def few_shot_chat_message_prompt_template():
+    """
+    
+    """
+    examples = get_example_set()
+    example_prompt = ChatPromptTemplate.from_messages([
+        ("human", "{question}"),
+        ("ai", "{answer}")
+    ])
+    few_shot_prompt = FewShotChatMessagePromptTemplate(
+        examples = examples,
+        example_prompt=example_prompt
+    )
+    final_prompt = ChatPromptTemplate.from_messages([
+        ("system", "You are a helpful assistant."),
+        few_shot_prompt,
+        ("human", "{input}")
+    ])
+    chat_with_model(final_prompt.invoke({"input": "What day is today?"}))
 
 
 def get_example_set() -> list[dict]:
