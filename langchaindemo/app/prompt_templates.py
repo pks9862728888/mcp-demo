@@ -1,5 +1,8 @@
 from langchain_core.prompts import PromptTemplate, \
 ChatPromptTemplate, MessagesPlaceholder, FewShotPromptTemplate
+from langchain_core.example_selectors import SemanticSimilarityExampleSelector
+from langchain_openai import OpenAIEmbeddings
+from langchain_chroma import Chroma
 from app.model import model
 
 
@@ -48,16 +51,25 @@ def few_shot_prompt_template():
     """
     Used to create a few-shot prompt with multiple examples
     """
+    question = "My name is Khan?"
     example_prompt = PromptTemplate.from_template("Question: {question}\n{answer}")
     examples = get_example_set()
-    # print(example_prompt.invoke(examples[0]).to_string())
+    example_selector = SemanticSimilarityExampleSelector.from_examples(
+        examples,
+        OpenAIEmbeddings(),
+        Chroma, # This is the VectorStore class that is used to store the embeddings and do a similarity search over.
+        k = 1,
+    )
+    selected_examples = example_selector.select_examples({"question": question})
+    for examples in selected_examples:
+        print(f"ex: {examples}")
     prompt = FewShotPromptTemplate(
-        examples = examples,
+        example_selector = example_selector,
         example_prompt = example_prompt,
         suffix = "Question: {input}",
         input_variables = ["input"]
     )
-    formatted_prompt = prompt.invoke({"input": "Who is the father of computer?"})
+    formatted_prompt = prompt.invoke({"input": question})
     print(formatted_prompt.to_string())
     chat_with_model(formatted_prompt)
 
