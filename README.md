@@ -127,4 +127,11 @@ Pydantic is a Python library for data validation and settings management that le
 
 ## Template prompting pattern
 
-![templateprompting](templateprompting.png)
+![templateprompting](images/templateprompting.png)
+![templateprompting2](images/templateprompting2.png)
+![templateprompting3](images/templateprompting3.png)
+
+## Two ways of handling AI / environment interface issue
+
+- Prompt engineering + parsing
+- LLM that support function calling
