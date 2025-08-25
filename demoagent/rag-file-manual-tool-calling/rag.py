@@ -109,6 +109,8 @@ def rag_agent_in_loop_demo():
     {
         "tool_name": "insert tool_name",
         "args": {...fill in any required arguments here...}
+        "reasoning": "Explain why this action is being taken."
+        "confidence": "0-1"
     }
     ```"""
     }]
