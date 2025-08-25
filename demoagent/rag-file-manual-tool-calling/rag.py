@@ -49,16 +49,23 @@ def rag_agent_in_loop_demo():
          You are a helpful assistant. 
 
          Based on user's input you can take one of the following actions:
-         1. list_files
-         2. read_file
-         3. display_error
-         4. terminate
+         1. list_files: Used to list available files for using retrieval-augmented generation (RAG)
+         2. read_file: Used to read the content of a specific file
+         3. display_error: Used to display an error message to the user. If no viable action is found, this action should be taken.
+         4. terminate: Used to terminate the conversation
+
+         Each action is associated with a method having the following signature:
+         def list_files() -> List[str]
+         def read_file(file_name: str) -> str
+         def display_error(error_message: str) -> None
+         def terminate() -> None
 
          The action which you choose from above should be output in JSON format: 
-         {"action_name": "action_name_from_above_list", "action_param": "action_param", "result": "final result to dislay to user if action_type is terminate", "reasoning": "reasoning why you have chosen that action", "error": "error_message", "confidence": "0-1"}
+         {"action_name": "action_name_from_above_list", "action_param": "{"paramName": "paramValue"}", "result": "final result to dislay to user if action_type is terminate", "reasoning": "reasoning why you have chosen that action", "error": "error_message", "confidence": "0-1"}
          For each response only output in above json format only, do not include any additional text.
 
-         If you haven't listed files initially, then always first list_files to know what are the available files. 
+         Irrespective of the user question, 
+         always first list_files to know what are the available files and only answer questions based on file content. 
          Once you have got the files, based on file_name decide which files are relevant.
          Once you have decided the relevant files, you can use read_file to read content of file.
          Once you have read conent of file, you can use the context from files to answer user queries.
@@ -70,7 +77,7 @@ def rag_agent_in_loop_demo():
 
     max_iterations: int = 5
     iterations: int = 0
-    user_input = input("What do you want to know?")
+    user_input = input("What do you want to know? ")
     messages.append({"role": "user", "content": user_input})
 
     while iterations < max_iterations:
@@ -93,7 +100,7 @@ def rag_agent_in_loop_demo():
             messages.append({"role": "user", "content": json.dumps({"files": files})})
             print(f"files: {files}")
         elif action_name == "read_file":
-            file_name = action_response.get("action_param", None)
+            file_name = action_response.get("action_param", {}).get("file_name", None)
             file_content_response = read_file(file_name)
             messages.append({"role": "user", "content": json.dumps(file_content_response)})
             print(f"file_content: {file_content_response}")
