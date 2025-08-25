@@ -22,12 +22,31 @@ def generate_response(messages: List[Dict]) -> str:
     return response.choices[0].message.content # type: ignore
 
 
+def extract_markdown_block(response: str, block_type: str = "json") -> str:
+    """Extract code block from response"""
+
+    if not '```' in response:
+        return response
+
+    code_block = response.split('```')[1].strip()
+
+    if code_block.startswith(block_type):
+        code_block = code_block[len(block_type):].strip()
+
+    return code_block
+
+
 def parse_action(llm_response: str) -> Dict[str, Any]:
+    """Parse the LLM response into a structured action dictionary."""
     try:
-        response = json.loads(llm_response)
+        response = extract_markdown_block(llm_response, "action")
+        response_json = json.loads(response)
+        if "tool_name" in response_json and "args" in response_json:
+            return response_json
+        else:
+            return {"tool_name": "error", "args": {"message": "You must respond with a JSON tool invocation."}}
     except json.JSONDecodeError:
-        response = {"error": "Invalid JSON format"}
-    return response
+        return {"tool_name": "error", "args": {"message": "Invalid JSON response. You must respond with a JSON tool invocation."}}
 
 
 def read_file(file_name: str | None) -> Dict[str, str]:
@@ -43,37 +62,56 @@ def read_file(file_name: str | None) -> Dict[str, str]:
 
 
 def rag_agent_in_loop_demo():
-    messages = [
-        {"role": "system", 
-         "content": """
-         You are a helpful assistant. 
+    messages = [{
+    "role": "system",
+    "content": """
+    You are an AI agent that can perform tasks by using available tools.
 
-         Based on user's input you can take one of the following actions:
-         1. list_files: Used to list available files for using retrieval-augmented generation (RAG)
-         2. read_file: Used to read the content of a specific file
-         3. display_error: Used to display an error message to the user. If no viable action is found, this action should be taken.
-         4. terminate: Used to terminate the conversation
+    Available tools:
 
-         Each action is associated with a method having the following signature:
-         def list_files() -> List[str]
-         def read_file(file_name: str) -> str
-         def display_error(error_message: str) -> None
-         def terminate() -> None
+    ```json
+    {
+        "list_files": {
+            "description": "Lists all files in the current directory.",
+            "parameters": {}
+        },
+        "read_file": {
+            "description": "Reads the content of a file.",
+            "parameters": {
+                "file_name": {
+                    "type": "string",
+                    "description": "The name of the file to read."
+                }
+            }
+        },
+        "terminate": {
+            "description": "Ends the agent loop and provides a summary of the task.",
+            "parameters": {
+                "message": {
+                    "type": "string",
+                    "description": "Summary message to return to the user."
+                }
+            }
+        }
+    }
+    ```
 
-         The action which you choose from above should be output in JSON format: 
-         {"action_name": "action_name_from_above_list", "action_param": "{"paramName": "paramValue"}", "result": "final result to dislay to user if action_type is terminate", "reasoning": "reasoning why you have chosen that action", "error": "error_message", "confidence": "0-1"}
-         For each response only output in above json format only, do not include any additional text.
+    If a user asks about files, documents, or content, first list the files before reading them.
 
-         Irrespective of the user question, 
-         always first list_files to know what are the available files and only answer questions based on file content. 
-         Once you have got the files, based on file_name decide which files are relevant.
-         Once you have decided the relevant files, you can use read_file to read content of file.
-         Once you have read conent of file, you can use the context from files to answer user queries.
+    When you are done, terminate the conversation by using the "terminate" tool and I will provide the results to the user.
 
-         If no relevant files are found, or if content of file is not sufficient to answer user's query
-         then clearly communicate this to the user and terminate the action loop.
-         """}
-    ]
+    Important!!! Every response MUST have an action.
+    You must ALWAYS respond in this format:
+
+    <Stop and think step by step. Parameters map to args. Insert a rich description of your step by step thoughts here.>
+
+    ```action
+    {
+        "tool_name": "insert tool_name",
+        "args": {...fill in any required arguments here...}
+    }
+    ```"""
+    }]
 
     max_iterations: int = 5
     iterations: int = 0
@@ -89,7 +127,7 @@ def rag_agent_in_loop_demo():
         messages.append({"role": "assistant", "content": json.dumps(action_response)})
 
         # Parse the action to be taken and take action, report action outcome to agent
-        action_name = action_response.get("action_name", None)
+        action_name = action_response.get("tool_name", None)
         if action_name == "terminate":
             print(f"{action_response.get('result', '')}")
             print("Terminating...")
@@ -100,12 +138,12 @@ def rag_agent_in_loop_demo():
             messages.append({"role": "user", "content": json.dumps({"files": files})})
             print(f"files: {files}")
         elif action_name == "read_file":
-            file_name = action_response.get("action_param", {}).get("file_name", None)
+            file_name = action_response.get("args", {}).get("file_name", None)
             file_content_response = read_file(file_name)
             messages.append({"role": "user", "content": json.dumps(file_content_response)})
             print(f"file_content: {file_content_response}")
         elif action_name == "display_error":
-            error_message = action_response.get("error", action_response.get("error", "Unknown error"))
+            error_message = action_response.get("args", {}).get("error", "Unknown error")
             print(error_message)
             messages.append({"role": "user", "content": f"Error communicated to user: {json.dumps({'error': error_message})}"})
         else:
