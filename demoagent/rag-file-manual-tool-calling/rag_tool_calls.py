@@ -1,4 +1,4 @@
-from typing import Any, Dict, List
+from typing import Dict, List, Union
 from dotenv import load_dotenv
 import os
 import json
@@ -12,15 +12,6 @@ if not OPENAI_API_KEY:
     raise ValueError("OPENAI_API_KEY environment variable not set")
 else:
     print("OPENAI_API_KEY is set")
-
-def generate_response(messages: List[Dict], tools: List[Dict]) -> str:
-    response = completion(
-        model="openai/gpt-4o",
-        messages=messages,
-        tools=tools,
-        max_tokens=1024
-    )
-    return response.choices[0].message.tool_calls[0] # type: ignore
 
 
 def list_files() -> List[str]:
@@ -119,21 +110,45 @@ def rag_agent_in_loop_demo():
 
     while iterations < max_iterations:
         # Send prompt to LLM to determine an action
-        print("\nAgent thinking...")
-        tool = generate_response(messages, tools)
-        tool_name = tool.function.name
-        tool_args = json.loads(tool.function.arguments)
-        print(f"Agent selected tool: {tool_name} with args: {tool_args}")
-
-        # Call function
-        result = tool_functions[tool_name](**tool_args)
-        print("Agent action response:", result)
-        if (tool_name == "terminate"):
-            print("Final result:", result)
-            break
-        messages.append({"role": "assistant", "content": json.dumps(result)})
-
         iterations += 1
+        print("\nAgent thinking...")
+        response = completion(
+            model="openai/gpt-4o",
+            messages=messages,
+            tools=tools,
+            max_tokens=1024
+        )
+        if (response.choices[0].message.tool_calls):
+            tool = response.choices[0].message.tool_calls[0]
+            tool_name = tool.function.name
+            tool_args = json.loads(tool.function.arguments)
+            print(f"Agent selected tool: {tool_name} with args: {tool_args}")
+
+            action = {
+                "tool_name": tool_name,
+                "args": tool_args
+            }
+
+            # Call function
+            if tool_name == "terminate":
+                print("Final result:", tool_args["result"])
+                break
+            elif tool_name in tool_functions:
+                try:
+                    result = tool_functions[tool_name](**tool_args)
+                    print(f"Agent tool: {tool_name} calling response: {result}")
+                except Exception as e:
+                    result = {"error": f"Error executing {tool_name}, error_message: {str(e)}"}
+            else:
+                result = {"error": f"Unknown tool: {tool_name}"}
+            messages.extend([
+                {"role": "assistant", "content": json.dumps(action)},
+                {"role": "user", "content": json.dumps(result)}
+            ])
+        else:
+            result = response.choices[0].message.content
+            print("Agent response:", result)
+            break
 
 
 if __name__ == "__main__":
