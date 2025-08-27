@@ -118,8 +118,8 @@ def rag_agent_in_loop_demo():
             tools=tools,
             max_tokens=1024
         )
-        if (response.choices[0].message.tool_calls):
-            tool = response.choices[0].message.tool_calls[0]
+        if (response.choices[0].message.tool_calls): # type: ignore
+            tool = response.choices[0].message.tool_calls[0] # type: ignore
             tool_name = tool.function.name
             try:
                 tool_args = json.loads(tool.function.arguments)
@@ -149,7 +149,7 @@ def rag_agent_in_loop_demo():
             messages.append({"role": "assistant", "content": json.dumps(action)})
             messages.append({"role": "user", "content": json.dumps(result)})
         else:
-            result = response.choices[0].message.content
+            result = response.choices[0].message.content # type: ignore
             print("Agent response:", result)
             break
 

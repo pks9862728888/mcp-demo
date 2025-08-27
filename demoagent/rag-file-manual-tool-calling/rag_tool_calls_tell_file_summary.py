@@ -117,7 +117,7 @@ def rag_agent_in_loop_demo():
 
     If user asks anything other than summarizing files, respond by calling "terminate" tool with message, "I'm sorry, I can only help with summarizing files in specific directory."
     If user asks for summarizing files without specifying a directory, respond by calling "terminate" tool with message, "I'm sorry, I need a directory to list and summarize files."
-    If you get error message from listing files, use the "terminate" tool with an appropriate error message.
+    If you get error message from listing files
     """}]
 
     max_iterations: int = 5
@@ -135,8 +135,8 @@ def rag_agent_in_loop_demo():
             tools=tools,
             max_tokens=1024
         )
-        if (response.choices[0].message.tool_calls):
-            tool = response.choices[0].message.tool_calls[0]
+        if (response.choices[0].message.tool_calls): # type: ignore
+            tool = response.choices[0].message.tool_calls[0] # type: ignore
             tool_name = tool.function.name
             try:
                 tool_args = json.loads(tool.function.arguments)
@@ -166,7 +166,7 @@ def rag_agent_in_loop_demo():
             messages.append({"role": "assistant", "content": json.dumps(action)})
             messages.append({"role": "user", "content": json.dumps(result)})
         else:
-            result = response.choices[0].message.content
+            result = response.choices[0].message.content # type: ignore
             print("Agent response:", result)
             break
 
