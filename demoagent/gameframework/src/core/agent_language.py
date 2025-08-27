@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Dict
 from core.action import Action
 from core.environment import Environment
 from core.goal import Goal
@@ -17,5 +17,5 @@ class AgentLanguage:
                          memory: Memory) -> Prompt:
         raise NotImplementedError("construct_prompt not implemented.")
 
-    def parse_response(self, response: dict) -> dict:
+    def parse_response(self, response: str) -> Dict:
         raise NotImplementedError("parse_response not implemented.")

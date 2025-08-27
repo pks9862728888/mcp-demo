@@ -5,8 +5,8 @@ from pydantic import BaseModel
 
 
 class ActionResult(BaseModel):
-    tool_executed: bool
-    tool_name: str
+    tool_executed: bool = False
+    tool_name: str | None = None
     error: str | None = None
     traceback: str | None = None
     result: Any = None

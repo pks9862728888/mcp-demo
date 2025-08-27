@@ -5,7 +5,7 @@ class Memory:
     def __init__(self):
         self.items: List[Dict] = []
 
-    def add(self, memory: dict):
+    def append(self, memory: dict):
         """Add items to memory"""
         self.items.append(memory)
 
