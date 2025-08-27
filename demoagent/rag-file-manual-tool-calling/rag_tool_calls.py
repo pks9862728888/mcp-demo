@@ -121,7 +121,12 @@ def rag_agent_in_loop_demo():
         if (response.choices[0].message.tool_calls):
             tool = response.choices[0].message.tool_calls[0]
             tool_name = tool.function.name
-            tool_args = json.loads(tool.function.arguments)
+            try:
+                tool_args = json.loads(tool.function.arguments)
+            except json.JSONDecodeError as e:
+                tool_args = {}
+                messages.append({"role": "assistant", "content": f"Error decoding JSON tool_args for {tool_name}: {e}"})
+                continue
             print(f"Agent selected tool: {tool_name} with args: {tool_args}")
 
             action = {
