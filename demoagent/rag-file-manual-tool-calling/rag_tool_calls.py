@@ -141,10 +141,8 @@ def rag_agent_in_loop_demo():
                     result = {"error": f"Error executing {tool_name}, error_message: {str(e)}"}
             else:
                 result = {"error": f"Unknown tool: {tool_name}"}
-            messages.extend([
-                {"role": "assistant", "content": json.dumps(action)},
-                {"role": "user", "content": json.dumps(result)}
-            ])
+            messages.append({"role": "assistant", "content": json.dumps(action)})
+            messages.append({"role": "user", "content": json.dumps(result)})
         else:
             result = response.choices[0].message.content
             print("Agent response:", result)
