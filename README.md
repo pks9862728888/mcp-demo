@@ -180,3 +180,29 @@ Agent response:
   }
 }
 ```
+
+### Designing effective tools for agents
+
+- Provide limited, well-defined set of functions that as as specific as possible to agents intended task
+- Well designed tools reduce ambiguity, improve readibility and helps AI execute actions corectly without misinterpretation
+- Each tool should handle errors gracefully and provide rich error messages back to agent.
+  This helps preventing failures, and agent can adjust its actions dynamically when unexpected issues occur.
+- One error message format can be, {"error": "Invalid file type. Only Python files can be read. Call the list_python_files function to get a list of valid files."} This not only communicates error but also instructs agent what to do next to handle error just in time.
+
+### Tool naming principles
+
+- Use descriptive names
+- Provide strcuted meta-data
+- Leverage json schema for parameters
+- Ensure AI has contextual understanding
+- Include robust error handling
+- Provide informative error messages
+- Inject instructions into error messages
+
+### Agent loop
+
+An AI Agent Loop is the continuous cycle of perceiving, reasoning, acting, and learning that drives intelligent autonomous agents.
+First agent is given a goal and a set of instructions along with a set of tools.
+Then the agent reasons about and decides the next course of action.
+Then we execute the actions and send back the result to the agent.
+The agent analyzes the outcome, and then decides what should be the next course of action which brings it closer to its goal.
