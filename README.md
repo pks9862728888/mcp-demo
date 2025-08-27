@@ -202,7 +202,72 @@ Agent response:
 ### Agent loop
 
 An AI Agent Loop is the continuous cycle of perceiving, reasoning, acting, and learning that drives intelligent autonomous agents.
-First agent is given a goal and a set of instructions along with a set of tools.
-Then the agent reasons about and decides the next course of action.
-Then we execute the actions and send back the result to the agent.
-The agent analyzes the outcome, and then decides what should be the next course of action which brings it closer to its goal.
+
+- First agent is given a goal and a set of instructions along with a set of tools.
+- Then the agent reasons about and decides the next course of action.
+- Then we execute the actions and send back the result to the agent.
+- The agent analyzes the outcome, and then decides what should be the next course of action which brings it closer to its goal.
+
+## Agent (GAME framework)
+
+- Goals / Instructions
+- Actions: Tools / What agents can do?
+- Memory
+- Environment: How instructions are carried out?
+
+[rapid_prototyping_game](images/rapid_prototyping_game.png)
+
+Similarly, before implementing an agent, we want to verify that:
+
+- The goals are achievable with the planned actions
+- The memory requirements are reasonable
+- The actions available are sufficient to solve the problem
+- The agent can make appropriate decisions with the available information
+
+```
+I'd like to simulate an AI agent that I'm designing. The agent will be built using these components:
+
+Goals: [List your goals]
+Actions: [List available actions]
+
+At each step, your output must be an action to take.
+
+Stop and wait and I will type in the result of
+the action as my next message.
+
+Ask me for the first task to perform.
+```
+
+At the end of your simulation sessions, ask the agent to reflect on its experience. What tools did it wish it had? Were any instructions unclear? Which goals were too vague?
+
+To better understand how these components interact, let’s trace how information flows through a single iteration of the loop:
+
+- The Memory provides context about what the user has asked the agent to do and past decisions and results from the agent loop
+- The Goals define what the agent is trying to accomplish and rules on how to accomplish it
+- The ActionRegistry defines what the agent can do and helps lookup the action to execute by name
+- The AgentLanguage formats Memory, Actions, and Goals into a prompt for the LLM
+- The LLM generates a response choosing an action
+- The AgentLanguage parses the response into an action invocation, which will typically be extracted from tool calls
+- The Environment executes the action with the given arguments
+- The result is stored back in Memory
+- The loop repeats with the updated memory until the agent calls a terminal tool or reaches the maximum number of iterations
+
+```
+# A research agent
+research_agent = Agent(
+    goals=[Goal("Find and summarize information on topic X")],
+    agent_language=ResearchLanguage(),
+    action_registry=ActionRegistry([SearchAction(), SummarizeAction(), ...]),
+    generate_response=openai_call,
+    environment=WebEnvironment()
+)
+
+# A coding agent
+coding_agent = Agent(
+    goals=[Goal("Write and debug Python code for task Y")],
+    agent_language=CodingLanguage(),
+    action_registry=ActionRegistry([WriteCodeAction(), TestCodeAction(), ...]),
+    generate_response=anthropic_call,
+    environment=DevEnvironment()
+)
+```
