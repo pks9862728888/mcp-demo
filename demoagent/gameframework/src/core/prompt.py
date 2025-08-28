@@ -14,7 +14,7 @@ class Prompt(BaseModel):
     metadata: Dict = Field(default_factory=dict)
 
 
-def generate_response(prompt: Prompt) -> str | dict | None:
+def generate_response(prompt: Prompt) -> str | Dict:
     """Calls llm to generate response"""
     messages = prompt.messages
     tools = prompt.tools
@@ -34,6 +34,7 @@ def generate_response(prompt: Prompt) -> str | dict | None:
             max_tokens=1024
         )
 
+    result = {}
     if response.choices[0].message.tool_calls:  # type: ignore
         tool = response.choices[0].message.tool_calls[0]  # type: ignore
         try:
@@ -48,5 +49,6 @@ def generate_response(prompt: Prompt) -> str | dict | None:
             }
     else:
         result = response.choices[0].message.content  # type: ignore
+        result = result if result is not None else ""
 
     return result
