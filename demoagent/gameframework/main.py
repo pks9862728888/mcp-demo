@@ -39,11 +39,12 @@ def main():
 
     # Define action registry
     action_registry = ActionRegistry()
-    action_registry.register(Action(name="list_project_files",
-                                    function=list_project_files,
-                                    description="List all python files in the project",
-                                    parameters={},
-                                    terminal=False))
+    action_registry.register(
+        Action(name="list_project_files",
+               function=list_project_files,
+               description="List all python files in the project",
+               parameters={},
+               terminal=False))
     action_registry.register(
         Action(name="read_project_file",
                function=read_project_file,
