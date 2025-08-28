@@ -49,9 +49,11 @@ class Agent:
 
     def update_memory(self, memory: Memory, response: str | Dict, result: ActionResult):
         """Update memory with response and result"""
-        memory.append({"type": "assistant", 
-                       "content": json.dumps(response) if isinstance(response, dict) else response})
-        memory.append({"type": "environment", "content": json.dumps(result.model_dump_json())})
+        formatted_response = json.dumps(response) \
+            if isinstance(response, dict) else response
+        memory.append({"type": "assistant", "content": formatted_response})
+        memory.append({"type": "environment",
+                       "content": json.dumps(result.model_dump_json())})
 
     def prompt_llm_for_action(self, prompt: Prompt) -> str | Dict:
         return self.generate_response(prompt)
