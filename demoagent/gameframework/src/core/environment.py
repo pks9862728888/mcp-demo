@@ -1,6 +1,6 @@
 import traceback
 from typing import Dict
-from core.action import Action, ActionResult
+from src.core.action import Action, ActionResult
 
 
 class Environment:

@@ -1,9 +1,9 @@
 import json
 from typing import Any, List, Dict
-from core.action import Action
-from core.goal import Goal
-from core.memory import Memory
-from core.prompt import Prompt
+from src.core.action import Action
+from src.core.goal import Goal
+from src.core.memory import Memory
+from src.core.prompt import Prompt
 
 
 class AgentLanguage:

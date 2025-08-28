@@ -1,10 +1,10 @@
 from typing import List, Callable, Dict, Tuple
-from core.goal import Goal
-from core.action import Action, ActionRegistry, ActionResult
-from core.agent_language import AgentLanguage
-from core.prompt import Prompt
-from core.environment import Environment
-from core.memory import Memory
+from src.core.goal import Goal
+from src.core.action import Action, ActionRegistry, ActionResult
+from src.core.agent_language import AgentLanguage
+from src.core.prompt import Prompt
+from src.core.environment import Environment
+from src.core.memory import Memory
 
 import json
 
@@ -49,8 +49,9 @@ class Agent:
 
     def update_memory(self, memory: Memory, response: str | Dict, result: ActionResult):
         """Update memory with response and result"""
-        memory.append({"type": "assistant", "content": response})
-        memory.append({"type": "environment", "content": json.dumps(result)})
+        memory.append({"type": "assistant", 
+                       "content": json.dumps(response) if isinstance(response, dict) else response})
+        memory.append({"type": "environment", "content": json.dumps(result.model_dump_json())})
 
     def prompt_llm_for_action(self, prompt: Prompt) -> str | Dict:
         return self.generate_response(prompt)
