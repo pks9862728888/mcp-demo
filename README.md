@@ -271,3 +271,18 @@ coding_agent = Agent(
     environment=DevEnvironment()
 )
 ```
+
+## AgentLanguage
+
+The AgentLanguage component is crucial because it:
+
+- Centralizes Communication Logic: All prompt construction and response parsing is in one place
+- Enables Experimentation: We can try different prompt strategies by creating new language implementations
+- Improves Reliability: Structured response formats and error handling make the agent more robust
+- Supports Evolution: As LLM capabilities change, we can adapt our communication approach without changing the agent’s core logic
+
+## Tools
+
+- Tool Decorators: Tag and document individual tools
+- Tool Registry: Central storage of all available tools
+- Action Registry: Curated sets of tools for specific agents
