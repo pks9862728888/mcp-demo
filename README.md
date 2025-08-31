@@ -286,3 +286,8 @@ The AgentLanguage component is crucial because it:
 - Tool Decorators: Tag and document individual tools
 - Tool Registry: Central storage of all available tools
 - Action Registry: Curated sets of tools for specific agents
+
+## Rethinking how software is built in age of AI agents
+
+- Hallucination is the new form of computing.
+  Its a new form of computation which we can use.
