@@ -135,3 +135,7 @@ Ask me for what to outline.
 ## Semantic filter pattern
 
 Filter this information to remove any personally identifying information or information that could potentially be used to re-identify the person.
+
+## Policy highlighter
+
+Dont list any names or dates. Read and understand the travel policy. Then think step by step. Does this receipt comply with the travel policy?
